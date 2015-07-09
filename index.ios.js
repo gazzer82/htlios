@@ -17,6 +17,8 @@ var {
 var _ = require('lodash');
 var DDPClient = require("ddp-client");
 var ResponsiveImage = require("react-native-responsive-image");
+var Video = require('react-native-video');
+var Device = require('react-native-device');
 
 var htlios = React.createClass({
   getInitialState: function() {
@@ -109,8 +111,34 @@ var htlios = React.createClass({
   },
 
   renderList: function(list) {
-
-    if (list.postHasImage){
+    if (list.postHasVideo) {
+    return (
+      <View style={styles.posts}>
+        <View style={styles.container}>
+          <Text style={styles.userText}>@{list.postUserName}</Text>
+          <Text style={styles.dateText}>{String(list.postDate)}</Text>
+        </View>
+        <View style={styles.container}>
+          <Video source={{uri: list.postVideoURL}} // Can be a URL or a local file.
+            rate={1.0}                   // 0 is paused, 1 is normal.
+            volume={1.0}                 // 0 is muted, 1 is normal.
+            muted={false}                // Mutes the audio entirely.
+            paused={true}               // Pauses playback entirely.
+            resizeMode="cover"           // Fill the whole screen at aspect ratio.
+            repeat={true}                // Repeat forever.
+             //onLoadStart={this.loadStart} // Callback when video starts to load
+             //onLoad={this.setDuration}    // Callback when video loads
+             //onProgress={this.setTime}    // Callback every ~250ms with currentTime
+             //onEnd={this.onEnd}           // Callback when playback finishes
+             //onError={this.videoError}    // Callback when video cannot be loaded
+            style={styles.backgroundVideo} />
+        </View>
+        <View style={styles.container}>
+          <Text style={styles.bodyText}>{list.postText}</Text>
+        </View>
+      </View>
+    );
+    } else if (list.postHasImage){
     return (
       <View style={styles.posts}>
         <View style={styles.container}>
@@ -120,7 +148,7 @@ var htlios = React.createClass({
         <View style={styles.container}>
           <ResponsiveImage
             source={{uri: list.postImageURL}}
-            initWidth="394" initHeight="394"
+            initWidth="404" initHeight="404"
             style={styles.canvas} />
         </View>
         <View style={styles.container}>
@@ -128,15 +156,6 @@ var htlios = React.createClass({
         </View>
       </View>
     );
-    } else if (list.postHasVideo) {
-      return (
-        <View style={styles.container}>
-          <Text style={styles.userText}>@{list.postUserName}</Text>
-          <Text style={styles.dateText}>{String(list.postDate)}</Text>
-          <Text style={styles.dateText}>{String(list.postVideoURL)}</Text>
-          <Text style={styles.bodyText}>{list.postText}</Text>
-        </View>
-      );
     } else {
       return (
         <View style={styles.container}>
@@ -152,28 +171,31 @@ var htlios = React.createClass({
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    //justifyContent: 'center',
-    //alignItems: 'left',
-    backgroundColor: 'red',
-    position: 'relative'
+    justifyContent: 'center',
+    //alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    //position: 'relative'
   },
   posts: {
     flex: 1, 
-    flexDirection: 'column',
-    padding: 20,
-    //backgroundColor: 'red',
+    //flexDirection: 'column',
+    padding: 10,
+    backgroundColor: '#C0C0C0',
   },
   userText: {
     flex: 5,
     fontSize: 18,
+    padding: 5,
   },
   bodyText: {
     flex: 5,
     fontSize: 16,
+    padding: 5,
   },
   dateText: {
     flex: 5,
     fontSize: 16,
+    padding: 5,
   },
   listView: {
     paddingTop: 20,
@@ -184,15 +206,18 @@ var styles = StyleSheet.create({
     alignItems: 'stretch',
   },
   canvas: {
-    //position: 'absolute',
     resizeMode: "contain",
-    //width: 335,
-    //height: 335,
-    //top: 0,
-    //left: 0,
-    //bottom: 0,
-    //right: 0,
     flex: 1,
+  },
+    backgroundVideo: {
+    //position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    height: (Device.width - 20),
+    width: (Device.width - 20),
+    paddingTop: 5,
   },
 });
 AppRegistry.registerComponent('htlios', () => htlios);
