@@ -22,6 +22,7 @@ var ResponsiveImage = require("react-native-responsive-image");
 var Video = require('react-native-video');
 var Device = require('react-native-device');
 var prettydate = require("pretty-date");
+var NavigationBar = require('react-native-navbar');
 
 var TabBarItemIOS = TabBarIOS.Item;
 var SMXTabBarIOS = require('SMXTabBarIOS');
@@ -69,8 +70,7 @@ var htlios = React.createClass({
   },
 
   connectMeteor: function() {
-
-  ddpClient = new DDPClient({url: 'ws://localhost:3000/websocket'});
+  ddpClient = new DDPClient({url: 'ws://htl.dcloud.space/websocket'});
   var that = this;
   Object.observe(ddpClient, function(changes){
     changes.forEach(function(change){
@@ -258,6 +258,16 @@ return (
     );
   },
 
+  renderHeader: function() {
+    return (
+      <View style={styles.posts}>
+        <Text>
+          Hello
+        </Text>
+      </View>
+    );
+  },
+
   renderList: function(list) {
     var postType = 'text'
     if (list.postHasVideo) {
@@ -306,11 +316,10 @@ var PostImage = React.createClass({
   render: function() {
     if (this.props.postType == 'image'){
       return (
-          <View style={styles.container}>
-            <ResponsiveImage
+          <View style={styles.imageContainer}>
+            <Image
               source={{uri: this.props.postImageURL}}
-              initWidth="94" initHeight="94"
-              style={styles.canvas} />
+              style={styles.postImage} />
           </View>
       );
     } else {
@@ -508,6 +517,16 @@ var styles = StyleSheet.create({
   postButtonsDelete: {
     color: 'red',
     padding: 5,
+  },
+  postImage: {
+    flex: 1,
+  },
+  imageContainer: {
+    height: Device.width - 30,
+    flex: 1,
+    padding: 5,
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
   },
   headerContainer: {
     flexDirection: 'row',
